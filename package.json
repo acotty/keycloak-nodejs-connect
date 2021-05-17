@@ -1,6 +1,6 @@
 {
   "name": "keycloak-connect",
-  "version": "14.0.0-dev",
+  "version": "14.0.0-beta.2",
   "description": "Keycloak Connect Middleware",
   "homepage": "http://keycloak.org",
   "main": "keycloak.js",
@@ -38,8 +38,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "jwk-to-pem": "^2.0.5",
-    "keycloak-admin-client": "bucharest-gold/keycloak-admin-client"
+    "jwk-to-pem": "^2.0.5"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.23.0",
@@ -57,6 +56,7 @@
     "ink-docstrap": "^1.3.2",
     "jsdoc": "^3.6.7",
     "keycloak-request-token": "^0.1.0",
+    "keycloak-admin-client": "bucharest-gold/keycloak-admin-client",
     "minimist": "^1.2.5",
     "nock": "^13.0.11",
     "nyc": "^15.1.0",

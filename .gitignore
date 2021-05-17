@@ -51,8 +51,13 @@ jspm_packages
 # Docker mapped Volumes
 DockerVolumes
 
-# application potential specific directories
+# application potential specific directories and files
 dist
 coverage
+yarn.lock
+
+
+# Local Packages
+*.tgz
 
 

@@ -9,17 +9,21 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    name: Kycloak-nodejs-connect test for NodeJS version ${{ matrix.node-version }} on @ ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
 
     timeout-minutes: 30   # Just in case something goes realy real realy BAD.....
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        #node-version: [10.x, 12.x, 14.x, 16.x]
+        node-version: [16.x]
+        #os: [ubuntu-20.04, windows-2019, macos-10.15] Widnwos dioes not support docker and macos chews through the minutes
+        os: [ubuntu-20.04]
 
-    name: Kycloak-nodejs-connect test for NodeJS version ${{ matrix.node-version }}
-    
     steps:
     - uses: actions/checkout@v2
 
