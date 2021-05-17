@@ -111,6 +111,14 @@ After you have finished testing run the following command to remove the docker c
     or
     docker-compose down --remove-orphans --volumes
 
+
+## Examples
+
+In the examples directory are the following examples:
+
+* example-app - Express app showing simple use of this library
+* example-docker-compose-mysql - Docker compose showing how keycloak can be used with MYSQL instead of the simple standalone version in the main docker-compose.yml in the root directory.
+
 ## Contributing
 
 &nbsp;
@@ -127,4 +135,3 @@ Please read ***<https://github.com/keycloak/keycloak/blob/master/CONTRIBUTING.md
 ## License - Apache License
 
 * [Apache License, Version 2.0](LICENSE.txt)
-  

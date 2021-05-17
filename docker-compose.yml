@@ -15,28 +15,19 @@ services:
     restart: unless-stopped
     # Admin User password: Password01
     volumes:
-      # Linux container under linux:
-        #- /var/run/docker.sock:/var/run/docker.sock
-        #- ~/code/DataPersistent/portainer_data:/data
-      # Linux container under windows:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./DockerVolumes/portainer_data:/data
-      #- D:\Temp:/data
-      # Windows container:
-      # Windows container:
-        #- \\.\pipe\docker_engine:\\.\pipe\docker_engine
-        #-C:\ProgramData\Portainer:C:\data 
     ports:
       - 8000:8000
       - 9000:9000
     networks:
-      - docker-network
+      - keycloak-nodejs-connect-testing
     logging: *default-logging      
 
-  keycloak_SA:
+  keycloak:
     image: quay.io/keycloak/keycloak:12.0.4
-    hostname: keycloak_SA
-    container_name: keycloak_SA
+    hostname: keycloak
+    container_name: keycloak
     restart: unless-stopped
     environment:
       KEYCLOAK_USER: admin
@@ -66,25 +57,15 @@ services:
       test: "curl -f http://localhost:8080/auth || exit 1"
       start_period: 10s
     networks:
-      - docker-network
+      - keycloak-nodejs-connect-testing
     logging: *default-logging      
 
 networks:
-  docker-network:
-    name: docker-network
+  keycloak-nodejs-connect-testing:
+    name: keycloak-nodejs-connect-testing
     
-    
-# ------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------
 # http://localhost:8080/auth/admin/master/console
-#
-# https://github.com/keycloak/keycloak-nodejs-connect
-# https://github.com/keycloak/keycloak-nodejs-admin-client
-#
-# Very good example app:
-# https://github.com/v-ladynev/keycloak-nodejs-example
-#
-# ------------------------------------------------------------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------------------------------------------------------------
 # DOCKER WINDOWS PORT BINDING ERROR
 # =====================================
