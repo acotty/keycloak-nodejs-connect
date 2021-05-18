@@ -55,7 +55,7 @@ DockerVolumes
 dist
 coverage
 yarn.lock
-
+docs
 
 # Local Packages
 *.tgz
