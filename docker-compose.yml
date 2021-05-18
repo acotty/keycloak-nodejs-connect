@@ -9,7 +9,7 @@ x-logging:
 
 services:
   portainer:
-    image: portainer/portainer-ce:2.1.1-alpine
+    image: portainer/portainer-ce:2.5.0-alpine
     hostname: portainer
     container_name: portainer
     restart: unless-stopped
