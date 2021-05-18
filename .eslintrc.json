@@ -43,6 +43,7 @@
     "camelcase": "warn",
     "no-use-before-define": "warn",
     "node/no-deprecated-api": "warn",
+    "dot-notation": "warn",
 
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-explicit-any": "warn",
