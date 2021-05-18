@@ -10,7 +10,7 @@
     "format": "semistandard",
     "test": "./run-tests.sh",
     "docs": "rimraf docs-js && jsdoc -c .jsdoc.json",
-    "coverage": "nyc cover tape test/unit/*.js tape test/*.js"
+    "coverage": "nyc tape test/unit/*.js tape test/*.js"
   },
   "keywords": [
     "sso",
