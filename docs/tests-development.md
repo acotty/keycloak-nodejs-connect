@@ -10,9 +10,12 @@ The main tests are provided in `test` folder. Before executing them, first make 
 Running all the tests:
 
     make tests
+    or on windows run "npm run testNew" 
 
 Running specific tests:
     tape test/grant-manager-spec.js
+    or on windows run ".\node_modules\.bin\tap test/grant-manager-spec.js"
+    
 
 When developing your test depending on the feature or enhancement you are testing you may find it best to add to an
 existing test, or to write a test from scratch. For the latter, we recommend finding another test that is close to what 
