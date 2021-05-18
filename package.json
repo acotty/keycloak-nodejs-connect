@@ -5,6 +5,7 @@
   "homepage": "http://keycloak.org",
   "main": "keycloak.js",
   "scripts": {
+    "testonWindows": "./node_modules/.bin/tape --timeout=360 -j1 test/*-spec.js",
     "lint": "eslint *.js *.ts example/**/*.js middleware/**/*.js stores/**/*.js test/**/*.js",
     "format": "semistandard",
     "test": "./run-tests.sh",
