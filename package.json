@@ -9,7 +9,7 @@
     "lint": "eslint *.js *.ts example/**/*.js middleware/**/*.js stores/**/*.js test/**/*.js",
     "format": "semistandard",
     "test": "./run-tests.sh",
-    "docs": "jsdoc --verbose -d docs -t ./node_modules/ink-docstrap/template -R README.md index.js ./middleware/*.js stores/*.js ./middleware/auth-utils/*.js",
+    "docs": "rimraf docs-js && jsdoc -c .jsdoc.json",
     "coverage": "nyc cover tape test/unit/*.js tape test/*.js"
   },
   "keywords": [
@@ -57,6 +57,7 @@
     "keycloak-request-token": "^0.1.0",
     "nock": "^12.0.3",
     "nyc": "^15.0.0",
+    "rimraf": "^3.0.2",
     "rsa-compat": "^2.0.8",
     "selenium-webdriver": "^3.6.0",
     "semistandard": "^13.0.1",
