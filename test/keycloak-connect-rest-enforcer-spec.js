@@ -29,23 +29,23 @@ t.setTimeout(60000); // Change timeout from 30 sec to 360 sec
 
 t.test('setup', async t => {
   t.comment(`START TESTING FILE : ${__filename}`);
-  return admin.destroy(realmName, {ignoreDestroyRealNowFound: true})
-  .finally(() => {
-    return admin.createRealm(realmName)
-    .then(() => {
-      return appFileTest.enforcerResourceServer();
-    })
-    .then((clientRep) => {
-      return admin.createClient(clientRep, realmName);
-    })
-    .then((installation) => {
-      return appFileTest.build(installation);
-    })
-    .catch((err) => {
-      console.error('Failure: ', err);
-      t.fail(err.message);
+  return admin.destroy(realmName, { ignoreDestroyRealNowFound: true })
+    .finally(() => {
+      return admin.createRealm(realmName)
+        .then(() => {
+          return appFileTest.enforcerResourceServer();
+        })
+        .then((clientRep) => {
+          return admin.createClient(clientRep, realmName);
+        })
+        .then((installation) => {
+          return appFileTest.build(installation);
+        })
+        .catch((err) => {
+          console.error('Failure: ', err);
+          t.fail(err.message);
+        });
     });
-  });
 });
 
 t.test('Should test access to protected resource and scope view.', t => {
@@ -73,16 +73,16 @@ t.test('Should test access to protected resource and scope view without authoriz
   t.plan(1);
   return getToken({ realmName })
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .then((token) => {
-    const opt = {
-      method: 'get',
-      url: `${appFileTest.address}/protected/enforcer/resource`
-    };
-    return axios(opt)
-      .catch(error => {
-        t.equal(error.response.data, 'Access denied');
-      });
-  });
+    .then((token) => {
+      const opt = {
+        method: 'get',
+        url: `${appFileTest.address}/protected/enforcer/resource`
+      };
+      return axios(opt)
+        .catch(error => {
+          t.equal(error.response.data, 'Access denied');
+        });
+    });
 });
 
 t.test('Should test access to protected resource and scope update - and returned permissions.', t => {

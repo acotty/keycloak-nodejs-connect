@@ -27,75 +27,75 @@ t.setTimeout(60000); // Change timeout from 30 sec to 360 sec
 
 t.test('setup', async t => {
   t.comment(`START TESTING FILE : ${__filename}`);
-  return admin.destroy(realmName, {ignoreDestroyRealNowFound: true})
-  .finally(() => {
-    return admin.createRealm(realmName)
-    .then(() => {
-      return appFileTest.enforcerResourceServer();
-    })
-    .then((clientRep) => {
-      return admin.createClient(clientRep, realmName)
-    })
-    .then((installation) => {
-      return appFileTest.build(installation);
-    })
-    .catch((err) => {
-      console.error('Failure: ', err);
-      t.fail(err.message);
+  return admin.destroy(realmName, { ignoreDestroyRealNowFound: true })
+    .finally(() => {
+      return admin.createRealm(realmName)
+        .then(() => {
+          return appFileTest.enforcerResourceServer();
+        })
+        .then((clientRep) => {
+          return admin.createClient(clientRep, realmName);
+        })
+        .then((installation) => {
+          return appFileTest.build(installation);
+        })
+        .catch((err) => {
+          console.error('Failure: ', err);
+          t.fail(err.message);
+        });
     });
-  });
 });
 
 t.test('Should be able to access resource protected by the policy enforcer', t => {
   t.plan(3);
 
   return webDriverClass.getPage(appFileTest.port)
-  .then(() => {
-    return webDriverClass.getOutputElement();
-  })
-  .then(webElement => {
-    return webElement.getText();
-  })
-  .then(text => {
-    t.equal(text, 'Init Success (Not Authenticated)', 'User should not be authenticated');
-  })
-  .then(() => {
-    return webDriverClass.getLoginButtonElement();
-  })
-  .then(webElement => {
-    return webElement.click();
-  })
-  .then(() => {
-    return webDriverClass.login('test-admin', 'password');
-  })
-  .then(() => {
-    return webDriverClass.getEventsElement();
-  })
-  .then(webElement => {
-    return webElement.getText();
-  })
-  .then(text => {
-    t.equal(text, 'Auth Success', 'User should be authenticated');
-  })
-  .then(() => {
-    return webDriverClass.getgrantedResourceElement();
-  })
-  .then(webElement => {
-    return webElement.click();
-  })
-  .then(() => {
-    return webDriverClass.getEventsElement();
-  })
-  .then(webElement => {
-    return webElement.getText();
-  })
-  .then(text => {
-    t.equal(text, 'Granted', 'User can access resource protected by the policy enforcer');
-  })
-  .catch((err) => {
-    console.error('Failure: ', err);
-    t.fail(err.message);
-  });
+    .then(() => {
+      return webDriverClass.getOutputElement();
+    })
+    .then(webElement => {
+      return webElement.getText();
+    })
+    .then(text => {
+      t.equal(text, 'Init Success (Not Authenticated)', 'User should not be authenticated');
+    })
+    .then(() => {
+      return webDriverClass.getLoginButtonElement();
+    })
+    .then(webElement => {
+      return webElement.click();
+    })
+    .then(() => {
+      return webDriverClass.login('test-admin', 'password');
+    })
+    .then(() => {
+      return webDriverClass.getEventsElement();
+    })
+    .then(webElement => {
+      return webElement.getText();
+    })
+    .then(text => {
+      t.equal(text, 'Auth Success', 'User should be authenticated');
+    })
+    .then(() => {
+      return webDriverClass.getgrantedResourceElement();
+    })
+    .then(webElement => {
+      return webElement.click();
+    })
+    .then(() => {
+      return webDriverClass.getEventsElement();
+    })
+    .then(webElement => {
+      return webElement.getText();
+    })
+    .then(text => {
+      t.equal(text, 'Granted', 'User can access resource protected by the policy enforcer');
+    })
+    .catch((err) => {
+      console.error('Failure: ', err);
+      t.fail(err.message);
+    });
 });
 
 t.test('teardown', async t => {

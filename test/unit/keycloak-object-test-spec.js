@@ -27,7 +27,7 @@ t.setTimeout(60000); // Change timeout from 30 sec to 360 sec
 
 t.test('Should raise an error when no configuration is provided.', t => {
   t.throws(function () {
-    var k = new Keycloak();
+    let k = new Keycloak();
     t.notOk(k, 'Variable should be empty');
   }, Error, 'Adapter configuration must be provided.');
   t.end();

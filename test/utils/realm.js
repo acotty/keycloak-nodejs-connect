@@ -23,7 +23,7 @@ const settings = require('./config');
 const defaults = require('defaults-deep');
 const realmTemplate = 'test/fixtures/testrealm.json';
 
-var kca = keycloakAdminClient(settings);
+const kca = keycloakAdminClient(settings);
 
 /**
  * Create realms based on port and name specified
@@ -33,14 +33,14 @@ var kca = keycloakAdminClient(settings);
  * @returns {Promise} A promise that will resolve with the realm object.
  */
 function createRealm (realmName) {
-  var name = realmName || 'UnitTesting-test-realm';
-  var fixture = parse(realmTemplate, name);
-  
+  const name = realmName || 'UnitTesting-test-realm';
+  const fixture = parse(realmTemplate, name);
+
   return kca.then((client) => {
     return client.realms.create(fixture)
       .catch((err) => {
         console.error('Failure: ', err);
-      });  
+      });
   }).catch((err) => {
     console.error('Failure: ', err);
   });
@@ -53,27 +53,26 @@ function createRealm (realmName) {
  * @returns {Promise} A promise that will resolve with the realm object.
  */
 function createClient (clientRep, realmName) {
-  var realm = realmName || 'UnitTesting-test-realm';
+  const realm = realmName || 'UnitTesting-test-realm';
   return kca
-  .then((client) => {
-    return client.clients.create(realm, clientRep)
-    .then((rep) => {
-      return client.clients.installation(realm, rep.id);
+    .then((client) => {
+      return client.clients.create(realm, clientRep)
+        .then((rep) => {
+          return client.clients.installation(realm, rep.id);
+        })
+        .catch(err => {
+          console.error(`ERROR: a) createClient - ${err}`);
+        });
     })
     .catch(err => {
-      console.error(`ERROR: a) createClient - ${err}`);
+      console.error(`ERROR: b) createClient - ${err}`);
     });
-  })
-  .catch(err => {
-    console.error(`ERROR: b) createClient - ${err}`);
-  });
 }
 /**
  * Remove the realm based on the name provided
  * @param {object} realm - Realm name
  */
 function destroy (realm, config) {
-
   const configSettings = defaults(
     config,
     {

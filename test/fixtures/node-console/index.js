@@ -25,7 +25,7 @@ const enableDestroy = require('server-destroy');
 const parseClient = require('../../utils/helper').parseClient;
 
 Keycloak.prototype.redirectToLogin = function (req) {
-  var apiMatcher = /^\/service\/.*/i;
+  const apiMatcher = /^\/service\/.*/i;
   return !apiMatcher.test(req.baseUrl);
 };
 
@@ -34,50 +34,49 @@ Keycloak.prototype.obtainDirectly = function (user, pass) {
 };
 
 function NodeApp () {
-  var app = express();
+  const app = express();
   app.use(cookieParser());
-  var server = app.listen(0);
+  const server = app.listen(0);
   enableDestroy(server);
 
-  this.destroy = async function () {
-    // await server.close();
-    return await server.destroy();
+  this.destroy = function () {
+    return server.destroy();
   };
   this.port = server.address().port;
   this.address = 'http://localhost:' + this.port;
 
   // console.log('Testing app listening at %s', this.address);
 
-  this.publicClient = async function (app) {
-    var name = app || 'public-app';
-    return await parseClient('test/fixtures/templates/public-template.json', this.port, name)
-    .then(result => {
-      return result;
-    });
+  this.publicClient = function (app) {
+    const name = app || 'public-app';
+    return parseClient('test/fixtures/templates/public-template.json', this.port, name)
+      .then(result => {
+        return result;
+      });
   };
 
   this.bearerOnly = function (app) {
-    var name = app || 'bearer-app';
+    const name = app || 'bearer-app';
     return parseClient('test/fixtures/templates/bearerOnly-template.json', this.port, name)
-    .then(result => {
-      return result;
-    });
+      .then(result => {
+        return result;
+      });
   };
 
   this.confidential = function (app) {
-    var name = app || 'confidential-app';
+    const name = app || 'confidential-app';
     return parseClient('test/fixtures/templates/confidential-template.json', this.port, name)
-    .then(result => {
-      return result;
-    });
+      .then(result => {
+        return result;
+      });
   };
 
   this.enforcerResourceServer = function (app) {
-    var name = app || 'resource-server-app';
+    const name = app || 'resource-server-app';
     return parseClient('test/fixtures/templates/resource-server-template.json', this.port, name)
-    .then(result => {
-      return result;
-    });
+      .then(result => {
+        return result;
+      });
   };
 
   this.build = function (kcConfig, params) {
@@ -88,7 +87,7 @@ function NodeApp () {
     // Create a session-store to be used by both the express-session
     // middleware and the keycloak middleware.
 
-    var memoryStore = new session.MemoryStore();
+    const memoryStore = new session.MemoryStore();
 
     app.use(session({
       secret: 'mySecret',
@@ -103,11 +102,11 @@ function NodeApp () {
     // Additional configuration is read from keycloak.json file
     // installed from the Keycloak web console.
     params = params || { store: memoryStore };
-    var keycloak = new Keycloak(params, kcConfig);
+    const keycloak = new Keycloak(params, kcConfig);
 
     // A normal un-protected public URL.
     app.get('/', function (req, res) {
-      var authenticated = 'Init Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')';
+      const authenticated = 'Init Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')';
       output(res, authenticated);
     });
 
@@ -130,17 +129,17 @@ function NodeApp () {
     });
 
     app.get('/check-sso', keycloak.checkSso(), function (req, res) {
-      var authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')';
+      const authenticated = 'Check SSO Success (' + (req.session['keycloak-token'] ? 'Authenticated' : 'Not Authenticated') + ')';
       output(res, authenticated);
     });
 
     app.get('/restricted', keycloak.protect('realm:admin'), function (req, res) {
-      var user = req.kauth.grant.access_token.content.preferred_username;
+      const user = req.kauth.grant.access_token.content.preferred_username;
       output(res, user, 'Restricted access');
     });
 
     app.get('/cookie', keycloak.protect(), function (req, res) {
-      var authenticated = req.cookies['keycloak-token'] ? 'Auth Success' : 'Auth Failed';
+      const authenticated = req.cookies['keycloak-token'] ? 'Auth Success' : 'Auth Failed';
       output(res, JSON.stringify(JSON.parse(req.cookies['keycloak-token']), null, 4), authenticated);
     });
 
@@ -207,7 +206,7 @@ function NodeApp () {
     });
 
     app.get('/protected/web/resource', keycloak.enforcer(['resource:view']), function (req, res) {
-      var user = req.kauth.grant.access_token.content.preferred_username;
+      const user = req.kauth.grant.access_token.content.preferred_username;
       output(res, user, 'Granted');
     });
 

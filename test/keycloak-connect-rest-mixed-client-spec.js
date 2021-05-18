@@ -37,23 +37,23 @@ t.setTimeout(60000); // Change timeout from 30 sec to 360 sec
 
 t.test('setup', async t => {
   t.comment(`START TESTING FILE : ${__filename}`);
-  return admin.destroy(realmName, {ignoreDestroyRealNowFound: true})
-  .finally(() => {
-    return admin.createRealm(realmName)
-    .then(() => {
-      return appFileTest.confidential();
-    })
-    .then((clientRep) => {
-      return admin.createClient(clientRep, realmName)
-    })
-    .then((installation) => {
-      return appFileTest.build(installation);
-    })
-    .catch((err) => {
-      console.error('Failure: ', err);
-      t.fail(err.message);
+  return admin.destroy(realmName, { ignoreDestroyRealNowFound: true })
+    .finally(() => {
+      return admin.createRealm(realmName)
+        .then(() => {
+          return appFileTest.confidential();
+        })
+        .then((clientRep) => {
+          return admin.createClient(clientRep, realmName);
+        })
+        .then((installation) => {
+          return appFileTest.build(installation);
+        })
+        .catch((err) => {
+          console.error('Failure: ', err);
+          t.fail(err.message);
+        });
     });
-  });
 });
 
 t.test('Should test protected route - redirect to login page.', t => {
@@ -62,36 +62,36 @@ t.test('Should test protected route - redirect to login page.', t => {
     url: `${appFileTest.address}/service/admin`
   };
   return axios(opt)
-  .then(response => {
-    t.equal(response.status, 200);
-    t.ok(response.data, "Response contains data.");
-    if (response.data.indexOf('Sign in to your account') == 0) {
-      t.fail('protect did not redirect to login page!!!');
-    }
-  })
-  .catch( (error) => {
-    t.fail(error, "Unexpected error thrown");
-  });
+    .then(response => {
+      t.equal(response.status, 200);
+      t.ok(response.data, 'Response contains data.');
+      if (response.data.indexOf('Sign in to your account') === 0) {
+        t.fail('protect did not redirect to login page!!!');
+      }
+    })
+    .catch((error) => {
+      t.fail(error, 'Unexpected error thrown');
+    });
 });
 
 t.test('Should test protected route with admin credentials.', t => {
   t.plan(3);
   return getToken({ realmName })
-  .then((token) => {
-    const opt = {
-      url: `${appFileTest.address}/service/admin`,
-      headers: { Authorization: `Bearer ${token}` }
-    };
-    return axios(opt);
-  })
-  .then(response => {
-    t.equal(response.status, 200);
-    t.ok(response.data, "Response contains data.");
-    t.equal(response.data.message, 'admin');
-  })
-  .catch(error => {
-    t.fail(error, "Unexpected error thrown");
-  });
+    .then((token) => {
+      const opt = {
+        url: `${appFileTest.address}/service/admin`,
+        headers: { Authorization: `Bearer ${token}` }
+      };
+      return axios(opt);
+    })
+    .then(response => {
+      t.equal(response.status, 200);
+      t.ok(response.data, 'Response contains data.');
+      t.equal(response.data.message, 'admin');
+    })
+    .catch(error => {
+      t.fail(error, 'Unexpected error thrown');
+    });
 });
 
 t.test('Should test protected route with invalid access token.', t => {
@@ -105,16 +105,16 @@ t.test('Should test protected route with invalid access token.', t => {
     };
     // return t.shouldFail(axios(opt), 'Access denied', 'Response should be access denied for invalid access token');
     return axios(opt)
-    .then(response => {
-      t.equal(response.status, 200);
-      t.ok(response.data, "Response contains data.");
-      if (response.data.indexOf('Sign in to your account') == 0) {
-        t.fail('protect did not redirect to login page!!!');
-      }
-    })
-    .catch( (error) => {
-      t.fail(error, "Unexpected error thrown");
-    });
+      .then(response => {
+        t.equal(response.status, 200);
+        t.ok(response.data, 'Response contains data.');
+        if (response.data.indexOf('Sign in to your account') === 0) {
+          t.fail('protect did not redirect to login page!!!');
+        }
+      })
+      .catch((error) => {
+        t.fail(error, 'Unexpected error thrown');
+      });
   });
 });
 
@@ -193,13 +193,13 @@ t.test('Should not store grant on bearer request', t => {
 t.test('Should test admin logout endpoint with incomplete payload', t => {
   t.plan(2);
 
-  var appUnitTest = new NodeApp();
-  var client = admin.createClient(appUnitTest.confidential('adminapp'), realmName);
+  const appUnitTest = new NodeApp();
+  const client = admin.createClient(appUnitTest.confidential('adminapp'), realmName);
 
   return client.then((installation) => {
     appUnitTest.build(installation);
 
-    let opt = {
+    const opt = {
       method: 'post',
       url: `${appUnitTest.address}/k_logout`,
       data: TestVector.logoutIncompletePayload
@@ -210,24 +210,24 @@ t.test('Should test admin logout endpoint with incomplete payload', t => {
       t.equal(err.response.data, 'Cannot read property \'kid\' of undefined');
     });
   })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally(async () => {
-    await appUnitTest.destroy();
-  })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
+    });
 });
 
 t.test('Should test admin logout endpoint with payload signed by a different key pair', t => {
   t.plan(2);
 
-  var appUnitTest = new NodeApp();
-  var client = admin.createClient(appUnitTest.confidential('adminapp2'), realmName);
+  const appUnitTest = new NodeApp();
+  const client = admin.createClient(appUnitTest.confidential('adminapp2'), realmName);
 
   return client.then((installation) => {
     appUnitTest.build(installation);
 
-    let opt = {
+    const opt = {
       method: 'post',
       url: `${appUnitTest.address}/k_logout`,
       data: TestVector.logoutWrongKeyPairPayload
@@ -237,23 +237,23 @@ t.test('Should test admin logout endpoint with payload signed by a different key
       t.equal(err.response.data, 'admin request failed: invalid token (signature)');
     });
   })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally(async () => {
-    await appUnitTest.destroy();
-  })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
+    });
 });
 
 t.test('Should test admin logout endpoint with valid payload', t => {
   t.plan(1);
 
-  var appUnitTest = new NodeApp();
-  var client = admin.createClient(appUnitTest.confidential('adminapp3'), realmName);
+  const appUnitTest = new NodeApp();
+  const client = admin.createClient(appUnitTest.confidential('adminapp3'), realmName);
 
   return client.then((installation) => {
     appUnitTest.build(installation);
-    let opt = {
+    const opt = {
       method: 'post',
       url: `${appUnitTest.address}/k_logout`,
       data: TestVector.logoutValidPayload
@@ -264,24 +264,24 @@ t.test('Should test admin logout endpoint with valid payload', t => {
       t.fail(err.response.data);
     });
   })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally( async() => {
-    await appUnitTest.destroy();
-  })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
+    });
 });
 
 t.test('Should test admin push_not_before endpoint with incomplete payload', t => {
   t.plan(2);
 
-  var appUnitTest = new NodeApp();
-  var client = admin.createClient(appUnitTest.confidential('adminapp5'), realmName);
+  const appUnitTest = new NodeApp();
+  const client = admin.createClient(appUnitTest.confidential('adminapp5'), realmName);
 
   return client.then((installation) => {
     appUnitTest.build(installation);
 
-    let opt = {
+    const opt = {
       method: 'post',
       url: `${appUnitTest.address}/k_push_not_before`,
       data: TestVector.notBeforeIncompletePayload
@@ -292,24 +292,24 @@ t.test('Should test admin push_not_before endpoint with incomplete payload', t =
       t.equal(err.response.data, 'Cannot read property \'kid\' of undefined');
     });
   })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally( async() => {
-    await appUnitTest.destroy();
-  })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
+    });
 });
 
 t.test('Should test admin push_not_before endpoint with payload signed by a different key pair', t => {
   t.plan(2);
 
-  var appUnitTest = new NodeApp();
-  var client = admin.createClient(appUnitTest.confidential('adminapp6'), realmName);
+  const appUnitTest = new NodeApp();
+  const client = admin.createClient(appUnitTest.confidential('adminapp6'), realmName);
 
   return client.then((installation) => {
     appUnitTest.build(installation);
 
-    let opt = {
+    const opt = {
       method: 'post',
       url: `${appUnitTest.address}/k_push_not_before`,
       data: TestVector.notBeforeWrongKeyPairPayload
@@ -319,66 +319,66 @@ t.test('Should test admin push_not_before endpoint with payload signed by a diff
       t.equal(err.response.data, 'admin request failed: invalid token (signature)');
     });
   })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally( async () => {
-    await appUnitTest.destroy();
-  })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
+    });
 });
 
 t.test('Should verify during authentication if the token contains the client name as audience.', async t => {
   t.plan(3);
   const appUnitTest = new NodeApp();
   const clientRep = await appUnitTest.confidential('audience-app');
-  
+
   return admin.createClient(clientRep, realmName)
-  .then((installation) => {  
-    installation.verifyTokenAudience = true;
-    return appUnitTest.build(installation);
-  })
-  .then(() => {
-    return axios.post(`${appUnitTest.address}/service/grant`, auth)
-  })
-  .then(response => {
-    t.ok(response.data.id_token, 'Response should contain an id_token');
-    t.ok(response.data.access_token, 'Response should contain an access_token');
-    t.ok(response.data.refresh_token, 'Response should contain an refresh_token');
-  })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally( async () => {
-    await appUnitTest.destroy();
-  })
+    .then((installation) => {
+      installation.verifyTokenAudience = true;
+      return appUnitTest.build(installation);
+    })
+    .then(() => {
+      return axios.post(`${appUnitTest.address}/service/grant`, auth);
+    })
+    .then(response => {
+      t.ok(response.data.id_token, 'Response should contain an id_token');
+      t.ok(response.data.access_token, 'Response should contain an access_token');
+      t.ok(response.data.refresh_token, 'Response should contain an refresh_token');
+    })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
+    });
 });
 
 t.test('Should test admin push_not_before endpoint with valid payload', async t => {
   t.plan(1);
   const appUnitTest = new NodeApp();
   const clientRep = await appUnitTest.confidential('adminapp7');
-  
+
   return admin.createClient(clientRep, realmName)
-  .then((installation) => {
-    return appUnitTest.build(installation);
-  })
-  .then(() => {    
-    let opt = {
-      method: 'post',
-      url: `${appUnitTest.address}/k_push_not_before`,
-      data: TestVector.notBeforeValidPayload
-    };
-    return axios(opt)
-  })
-  .then(response => {
-    t.equal(response.status, 200);
-  })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally( async () => {
-    await appUnitTest.destroy();
-  })
+    .then((installation) => {
+      return appUnitTest.build(installation);
+    })
+    .then(() => {
+      const opt = {
+        method: 'post',
+        url: `${appUnitTest.address}/k_push_not_before`,
+        data: TestVector.notBeforeValidPayload
+      };
+      return axios(opt);
+    })
+    .then(response => {
+      t.equal(response.status, 200);
+    })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
+    });
 });
 
 t.test('Should logout with redirect url', t => {

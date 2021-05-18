@@ -30,25 +30,24 @@ t.setTimeout(60000); // Change timeout from 30 sec to 360 sec
 
 t.test('setup', async t => {
   t.comment(`START TESTING FILE : ${__filename}`);
-  return admin.destroy(realmName, {ignoreDestroyRealNowFound: true})
-  .finally(() => {
-    return admin.createRealm(realmName)
-    .then(() => {
-      return appFileTest.bearerOnly();
-    })
-    .then((clientRep) => {
-      return admin.createClient(clientRep, realmName);
-    })
-    .then((installation) => {
-        return appFileTest.build(installation);
-    })
-    .catch((err) => {
-      console.error('Failure: ', err);
-      t.fail(err.message);
+  return admin.destroy(realmName, { ignoreDestroyRealNowFound: true })
+    .finally(() => {
+      return admin.createRealm(realmName)
+        .then(() => {
+          return appFileTest.bearerOnly();
+        })
+        .then((clientRep) => {
+          return admin.createClient(clientRep, realmName);
+        })
+        .then((installation) => {
+          return appFileTest.build(installation);
+        })
+        .catch((err) => {
+          console.error('Failure: ', err);
+          t.fail(err.message);
+        });
     });
-  });
 });
-
 
 t.test('Should test unprotected route.', t => {
   t.plan(1);
@@ -73,12 +72,12 @@ t.test('Should test protected route.', t => {
   };
   // return t.shouldFail(axios(opt), 'Access denied', 'Response should be access denied for no credentials');
   return axios(opt)
-  .then(response => {
-    t.fail(response.data.message);
-  })
-  .catch( (error) => {
-    t.ok(error.response.status >= 300, `Response Status is bad` );
-  });
+    .then(response => {
+      t.fail(response.data.message);
+    })
+    .catch((error) => {
+      t.ok(error.response.status >= 300, 'Response Status is bad');
+    });
 });
 
 t.test('Should test for bad request on k_logout without any parameters.', t => {
@@ -89,12 +88,12 @@ t.test('Should test for bad request on k_logout without any parameters.', t => {
   };
   // return t.shouldFail(axios(opt), 'Response should be bad request');
   return axios(opt)
-  .then(response => {
-    t.fail(response.data.message);
-  })
-  .catch( (error) => {
-    t.ok(error.response.status >= 300, `Response Status is bad` );
-  });
+    .then(response => {
+      t.fail(response.data.message);
+    })
+    .catch((error) => {
+      t.ok(error.response.status >= 300, 'Response Status is bad');
+    });
 });
 
 t.test('Should test protected route with admin credentials.', t => {
@@ -108,14 +107,14 @@ t.test('Should test protected route with admin credentials.', t => {
       };
       return axios(opt)
         .then(response => {
-          t.equal(response.data.message, 'admin', `Expect the response.data.message to be "admin".`);
+          t.equal(response.data.message, 'admin', 'Expect the response.data.message to be "admin".');
         })
         .catch(error => {
-          t.fail(error.response.data, `Unexpected restAPI call (via axios) exception occured.`);
+          t.fail(error.response.data, 'Unexpected restAPI call (via axios) exception occured.');
         });
     })
     .catch(error => {
-      t.fail(error, `Unexpected getToken() call exception occured.`);
+      t.fail(error, 'Unexpected getToken() call exception occured.');
     });
 });
 
@@ -131,151 +130,151 @@ t.test('Should test protected route with invalid access token.', t => {
     };
     // return t.shouldFail(axios(opt), 'Access denied', 'Response should be access denied for invalid access token');
     return axios(opt)
-    .then(response => {
-      t.fail(response.data.message);
-    })
-    .catch( (error) => {
-      t.ok(error.response.status >= 300, `Response Status is bad` );
-    });
+      .then(response => {
+        t.fail(response.data.message);
+      })
+      .catch((error) => {
+        t.ok(error.response.status >= 300, 'Response Status is bad');
+      });
   });
 });
 
 t.test('Access should be denied for bearer client with invalid public key.', t => {
   t.plan(1);
 
-  var appUnitTest = new NodeApp();
+  const appUnitTest = new NodeApp();
 
   return admin.createClient(appUnitTest.bearerOnly('wrongkey-app'), realmName)
-  .then((installation) => {
-    installation['realm-public-key'] = TestVector.wrongRealmPublicKey;
-    appUnitTest.build(installation);
+    .then((installation) => {
+      installation['realm-public-key'] = TestVector.wrongRealmPublicKey;
+      appUnitTest.build(installation);
 
-    return getToken({ realmName }).then((token) => {
-      const opt = {
-        method: 'get',
-        url: `${appUnitTest.address}/service/admin`,
-        headers: {
-          Authorization: 'Bearer ' + token
-        }
-      };
+      return getToken({ realmName }).then((token) => {
+        const opt = {
+          method: 'get',
+          url: `${appUnitTest.address}/service/admin`,
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        };
 
-      // return t.shouldFail(axios(opt), 'Access denied', 'Response should be access denied for invalid public key');
-      return axios(opt)
-      .then(response => {
-        t.fail(response.data.message);
-      })
-      .catch( (error) => {
-        t.ok(error.response.status >= 300, `Response Status is bad` );
+        // return t.shouldFail(axios(opt), 'Access denied', 'Response should be access denied for invalid public key');
+        return axios(opt)
+          .then(response => {
+            t.fail(response.data.message);
+          })
+          .catch((error) => {
+            t.ok(error.response.status >= 300, 'Response Status is bad');
+          });
       });
+    })
+    .catch(err => {
+      t.fail(err, 'Enexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
     });
-  })
-  .catch(err => {
-    t.fail(err, "Enexpected error thrown");
-  })
-  .finally( async () => {
-    await appUnitTest.destroy();
-  })
 });
 
 t.test('Should test protected route after push revocation.', t => {
   t.plan(3);
 
-  var appUnitTest = new NodeApp();
-  var client = admin.createClient(appUnitTest.bearerOnly('revokeapp'), realmName);
+  const appUnitTest = new NodeApp();
+  const client = admin.createClient(appUnitTest.bearerOnly('revokeapp'), realmName);
 
   return client
-  .then((installation) => {
-    appUnitTest.build(installation);
+    .then((installation) => {
+      appUnitTest.build(installation);
 
-    return getToken({ realmName })
-    .then((token) => {
-      t.not(token, undefined, 'Check getToken returned a token.');
+      return getToken({ realmName })
+        .then((token) => {
+          t.not(token, undefined, 'Check getToken returned a token.');
 
-      let opt = {
-        method: 'get',
-        url: `${appUnitTest.address}/service/admin`,
-        headers: {
-          Authorization: 'Bearer ' + token,
-          Accept: 'application/json'
-        }
-      };
-      
-      return axios(opt)
-      .then(response => {
-        t.equal(response.data.message, 'admin', 'Request expected response to be "admin"');
+          const opt = {
+            method: 'get',
+            url: `${appUnitTest.address}/service/admin`,
+            headers: {
+              Authorization: 'Bearer ' + token,
+              Accept: 'application/json'
+            }
+          };
 
-        opt.url = `${appUnitTest.address}/auth/admin/realms/${realmName}/push-revocation`;
-        opt.method = 'post';
-        axios(opt);
-        opt.url = `${appUnitTest.address}/service/admin`;
+          return axios(opt)
+            .then(response => {
+              t.equal(response.data.message, 'admin', 'Request expected response to be "admin"');
 
-        return axios(opt)
-        .then(response => {
-          t.equal(response.data, 'URL Not found in fake keycloak server!', 'Check for correct axios from app server');
-        })
-        .catch(error => {
-          t.fail(error.response.data, "Unexpected error thrown");
+              opt.url = `${appUnitTest.address}/auth/admin/realms/${realmName}/push-revocation`;
+              opt.method = 'post';
+              axios(opt);
+              opt.url = `${appUnitTest.address}/service/admin`;
+
+              return axios(opt)
+                .then(response => {
+                  t.equal(response.data, 'URL Not found in fake keycloak server!', 'Check for correct axios from app server');
+                })
+                .catch(error => {
+                  t.fail(error.response.data, 'Unexpected error thrown');
+                });
+            });
         });
-      });
+    })
+    .catch(err => {
+      t.fail(err, 'Unexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
     });
-  })
-  .catch(err => {
-    t.fail(err, "Unexpected error thrown");
-  })
-  .finally( async () => {
-    await appUnitTest.destroy();
-  })
 });
 
 t.test('Should invoke admin logout.', t => {
   t.plan(3);
 
-  var appUnitTest = new NodeApp();
-  var client = admin.createClient(appUnitTest.bearerOnly('anotherapp'), realmName);
+  const appUnitTest = new NodeApp();
+  const client = admin.createClient(appUnitTest.bearerOnly('anotherapp'), realmName);
 
   return client
-  .then((installation) => {
-    appUnitTest.build(installation);
+    .then((installation) => {
+      appUnitTest.build(installation);
 
-    return getToken({ realmName })
-    .then((token) => {
-      t.not(token, undefined, 'Check getToken returned a token.');
+      return getToken({ realmName })
+        .then((token) => {
+          t.not(token, undefined, 'Check getToken returned a token.');
 
-      let opt = {
-        method: 'get',
-        url: `${appUnitTest.address}/service/admin`,
-        headers: {
-          Authorization: 'Bearer ' + token,
-          Accept: 'application/json'
-        }
-      };
-      return axios(opt)
-        .then(response => {
-          t.equal(response.data.message, 'admin', 'Request expected response to be "admin"');
-
-          opt.url = `${appUnitTest.address}/auth/admin/realms/${realmName}/logout-all`;
-          opt.method = 'post';
-          axios(opt);
-          opt.url = `${appUnitTest.address}/service/admin`;
-
+          const opt = {
+            method: 'get',
+            url: `${appUnitTest.address}/service/admin`,
+            headers: {
+              Authorization: 'Bearer ' + token,
+              Accept: 'application/json'
+            }
+          };
           return axios(opt)
             .then(response => {
-              t.equal(response.data, 'URL Not found in fake keycloak server!', 'Check for correct axios from app server');
-            })
-            .catch(error => {
-              t.fail(error.response.data);
+              t.equal(response.data.message, 'admin', 'Request expected response to be "admin"');
+
+              opt.url = `${appUnitTest.address}/auth/admin/realms/${realmName}/logout-all`;
+              opt.method = 'post';
+              axios(opt);
+              opt.url = `${appUnitTest.address}/service/admin`;
+
+              return axios(opt)
+                .then(response => {
+                  t.equal(response.data, 'URL Not found in fake keycloak server!', 'Check for correct axios from app server');
+                })
+                .catch(error => {
+                  t.fail(error.response.data);
+                });
             });
         });
+    })
+    .catch(err => {
+      t.fail(err, 'Unexpected error thrown');
+    })
+    .finally(async () => {
+      await appUnitTest.destroy();
     });
-  })
-  .catch(err => {
-    t.fail(err, "Unexpected error thrown");
-  })
-  .finally( async () => {
-    await appUnitTest.destroy();
-  })
 });
-  
+
 t.test('teardown', async (t) => {
   await appFileTest.destroy();
   await admin.destroy(realmName);
